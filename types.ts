@@ -3,326 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export interface DigitalProtocol {
-  internalId: string;
-  protocolNumber: string;
-  issuerInstitution: string;
-  officialIssueDate: string;
-  officialTime: string;
-  issuerResponsible: string;
-  category: string;
-  documentType: string;
-  currentState: string;
-  priority: string;
-  deadlineDate: string;
-  qrCodeUrl: string;
-  digitalSignature: string;
-  digitalSeal?: string;
-  documentHash?: string;
-  institutionalCertificate?: string;
-  signatureDate?: string;
-  legalValidity?: string;
-  archiveReference?: string;
-  archiveLocation?: string;
-}
+// =========================================================================
+// CANONICAL DOMAIN ENUMS
+// =========================================================================
 
-export interface CorrespondenceStateEvent {
-  state: 'Recebida' | 'Entregue' | 'Visualizada' | 'Confirmada' | 'Respondida' | 'Em análise' | 'Aprovada' | 'Rejeitada' | 'Contestada' | 'Expirada' | 'Arquivada' | 'Encaminhada';
-  date: string;
-  time: string;
-  responsible: string;
-  description: string;
-}
-
-export interface MessageDetail {
-  subject: string;
-  body: string;
-  deadline?: string;
-  state?: string;
-  actions?: string[];
-  attachments?: string[];
-}
-
-export interface Message {
-  id: number;
-  org: string;
-  preview: string;
-  date: string;
-  unread?: number;
-  status: string;
-  details?: MessageDetail;
-  protocol?: DigitalProtocol;
-  stateHistory?: CorrespondenceStateEvent[];
-  auditLogs?: string[];
-  sensitivity?: 'Público' | 'Privado' | 'Sensível' | 'Restrito' | 'Ultra Restrito';
-  priorityScale?: 'Normal' | 'Importante' | 'Urgente' | 'Crítico';
-  deadlineHoursRemaining?: number;
-}
-
-export interface Document {
-  name: string;
-  validity: string;
-  code: string;
-  holder: string;
-  number: string;
-  issuer: string;
-  issuedAt: string;
-  protocol?: DigitalProtocol;
-}
-
-export interface Contact {
-  id: number;
-  name: string;
-  bi: string;
-  relation: string;
-  status: string;
-  type?: 'Normal' | 'Emergência';
-  phone?: string;
-}
-
-export interface Slide {
-  id: number;
-  title: string;
-  subtitle: string;
-  image: string;
-  mobileImage?: string;
-  btn: string;
-  action: string;
-}
-
-export interface AppNotification {
-  id: number;
-  title: string;
-  message: string;
-  time: string;
-  type: 'success' | 'warning' | 'info';
-  targetTab: string;
-}
-
-export interface UserRequest {
-  id: number;
-  user: string;
-  type: string;
-  priority: 'Alta' | 'Média' | 'Baixa';
-  time: string;
-  status: 'pendente' | 'urgente' | 'processando' | 'concluido' | 'rejeitado';
-  bi: string;
-  institution?: string;
-  date?: string;
-}
-
-export interface DocRequest {
-  id: number;
-  userName: string;
-  userBi: string;
-  docType: string;
-  institution: string;
-  date: string;
-  status: 'Pendente' | 'Aprovado' | 'Rejeitado';
-  aiStatus?: 'pre-approved' | 'manual-review';
-}
-
-export type AppMode = 'user' | 'institution' | 'admin';
-
-export interface SensitivityConfig {
-  level: 'Público' | 'Privado' | 'Sensível' | 'Restrito' | 'Ultra Restrito';
-  color: string;
-  textColor: string;
-  borderColor: string;
-  badgeBg: string;
-  dotColor: string;
-  accessRules: string;
-  encryption: string;
-  sessionTimeout: string;
-  sessionTimeoutSeconds: number;
-  shareControl: string;
-  screenshotProtection: boolean;
-}
-
-export const SENSITIVITY_LEVELS: Record<'Público' | 'Privado' | 'Sensível' | 'Restrito' | 'Ultra Restrito', SensitivityConfig> = {
-  'Público': {
-    level: 'Público',
-    color: 'emerald',
-    textColor: 'text-emerald-700',
-    borderColor: 'border-emerald-150',
-    badgeBg: 'bg-emerald-50/50',
-    dotColor: 'bg-emerald-500',
-    accessRules: 'Acesso público sem restrições regulamentares. Qualquer cidadão autenticado pode visualizar.',
-    encryption: 'Segurança de Infraestrutura em canal TLS 1.3 padrão.',
-    sessionTimeout: 'Sem limite de tempo por inatividade.',
-    sessionTimeoutSeconds: 0,
-    shareControl: 'Permitido reencaminhar, arquivar, descarregar e partilhar sem restrições.',
-    screenshotProtection: false,
-  },
-  'Privado': {
-    level: 'Privado',
-    color: 'blue',
-    textColor: 'text-blue-700',
-    borderColor: 'border-blue-150',
-    badgeBg: 'bg-blue-50/50',
-    dotColor: 'bg-blue-500',
-    accessRules: 'Acesso restrito ao titular mediante logon seguro individual no portal.',
-    encryption: 'Cifragem AES-256 com chaves padrão do sistema de correio digital.',
-    sessionTimeout: '60 minutos de sessão.',
-    sessionTimeoutSeconds: 3600,
-    shareControl: 'Permitido arquivar e descarregar. Partilha com aposição de marca de água do destinatário.',
-    screenshotProtection: false,
-  },
-  'Sensível': {
-    level: 'Sensível',
-    color: 'amber',
-    textColor: 'text-amber-700',
-    borderColor: 'border-amber-200',
-    badgeBg: 'bg-amber-50/50',
-    dotColor: 'bg-amber-500',
-    accessRules: 'Acesso seguro por dupla confirmação integrada de identidade biométrica ou PIN ativa.',
-    encryption: 'Cifragem simétrica AES-GCM-256 com chave sob custódia de HSM dedicado do Estado.',
-    sessionTimeout: '15 minutos sob inatividade.',
-    sessionTimeoutSeconds: 900,
-    shareControl: 'Bloqueado o envio para canais externos não governamentais. Reencaminhamento auditado.',
-    screenshotProtection: true,
-  },
-  'Restrito': {
-    level: 'Restrito',
-    color: 'orange',
-    textColor: 'text-orange-700',
-    borderColor: 'border-orange-200',
-    badgeBg: 'bg-orange-50/50',
-    dotColor: 'bg-orange-500',
-    accessRules: 'Acesso controlado. Requer verificação contínua do token do dispositivo oficial cadastrado.',
-    encryption: 'Criptografia em trânsito ECDH com chaves temporárias efémeras exclusivas.',
-    sessionTimeout: '5 minutos de sessão activa antes de reautenticação compulsória.',
-    sessionTimeoutSeconds: 300,
-    shareControl: 'Reencaminhamento desativado de forma absoluta. Apenas leitura e auditoria.',
-    screenshotProtection: true,
-  },
-  'Ultra Restrito': {
-    level: 'Ultra Restrito',
-    color: 'red',
-    textColor: 'text-red-700',
-    borderColor: 'border-red-200',
-    badgeBg: 'bg-red-50/50',
-    dotColor: 'bg-red-500',
-    accessRules: 'Alto nível de segurança. Acesso apenas após reintrodução imprevista de credencial e registo imediato no SOC.',
-    encryption: 'Criptografia híbrida Pós-Quântica (Kyber-1024) com verificação de integridade forte SHA-512.',
-    sessionTimeout: '2 minutos sob vigilância cibernética ativa.',
-    sessionTimeoutSeconds: 120,
-    shareControl: 'Bloqueado qualquer tipo de reencaminhamento, resposta ou descarregamento tradicional.',
-    screenshotProtection: true,
-  }
-};
-
-export interface PriorityConfig {
-  priority: 'Normal' | 'Importante' | 'Urgente' | 'Crítico';
-  color: string;
-  textColor: string;
-  borderColor: string;
-  badgeBg: string;
-  dotColor: string;
-  defaultHours: number;
-  consequence: string;
-  autoAlerts: string[];
-  escalationLevels: string[];
-}
-
-export const PRIORITY_CONFIGS: Record<'Normal' | 'Importante' | 'Urgente' | 'Crítico', PriorityConfig> = {
-  'Normal': {
-    priority: 'Normal',
-    color: 'slate',
-    textColor: 'text-slate-700',
-    borderColor: 'border-slate-200',
-    badgeBg: 'bg-slate-55',
-    dotColor: 'bg-slate-400',
-    defaultHours: 120,
-    consequence: 'Arquivamento tardio com advertência administrativa simples.',
-    autoAlerts: ['Notificação por email institucional após 24 horas', 'Alerta visual padrão no painel.'],
-    escalationLevels: ['Lembrete preventivo simples no painel de correio eletrónico.', 'Arquivamento simples por decurso de prazo oficial sem sanção patrimonial.']
-  },
-  'Importante': {
-    priority: 'Importante',
-    color: 'blue',
-    textColor: 'text-blue-700',
-    borderColor: 'border-blue-200',
-    badgeBg: 'bg-blue-50',
-    dotColor: 'bg-blue-500',
-    defaultHours: 72,
-    consequence: 'Perda do bónus ou redução opcional de 15% na taxa administrativa regulamentar.',
-    autoAlerts: ['Alerta push diário automático.', 'Notificação com contagem decrescente no sumário semanal.'],
-    escalationLevels: ['Confirmação de recepção reenviada para o portal.', 'Petição de esclarecimento preventivo de inatividade governamental.']
-  },
-  'Urgente': {
-    priority: 'Urgente',
-    color: 'amber',
-    textColor: 'text-amber-700',
-    borderColor: 'border-amber-200',
-    badgeBg: 'bg-amber-50',
-    dotColor: 'bg-amber-500',
-    defaultHours: 48,
-    consequence: 'Suspensão e retenção temporária do serviço de emissão de novas guias e certidões no portal.',
-    autoAlerts: ['Notificador fixo no cabeçalho.', 'Contacto telefónico assistido ou correio expresso sob custódia.'],
-    escalationLevels: ['Comunicação eletrónica alternativa para serviços autorizados.', 'Envio urgente de estafeta de notificação física ao domicílio tributário.']
-  },
-  'Crítico': {
-    priority: 'Crítico',
-    color: 'red',
-    textColor: 'text-red-700',
-    borderColor: 'border-red-200',
-    badgeBg: 'bg-red-50/70',
-    dotColor: 'bg-red-600',
-    defaultHours: 24,
-    consequence: 'Execução fiscal imediata pela AGT ou impugnação legal definitiva de direitos.',
-    autoAlerts: ['Notificação sonora imersiva recursiva.', 'Envio de aviso prévio prioritário de Execução a cada 4 horas.'],
-    escalationLevels: ['Submissão imediata de dossiê de contencioso eletrónico ao Executivo Judicial.', 'Emissão de mandado administrativo e fiscal em coordenação policial ou militar.']
-  }
-};
-
-export interface Correspondence {
-  id: string;
-  sender: string;
-  recipient: string;
-  subject: string;
-  originProvince: string;
-  destinationProvince: string;
-  institution: 'AGT' | 'SME' | 'Tribunal Supremo' | 'Registo Civil' | 'ENDE' | 'MINJUS' | string;
-  status: 'Enviada' | 'Recebida' | 'Em Análise' | 'Respondida' | 'Arquivada' | 'Cancelada' | string;
-  date: string;
-  body: string;
-  category?: string;
-  sentDate?: string;
-  receivedDate?: string;
-  responseTime?: string;
-  priority?: 'Alta' | 'Média' | 'Baixa' | string;
-  attachments?: { name: string; size: string }[];
-  history?: { action: string; dateTime: string; user: string }[];
-  isDelayed?: boolean;
-  delayDays?: number;
-}
-
-export interface SessionUser {
-  id: string;
-  name: string;
-  firstName: string;
-  lastName: string;
-  bi: string;
-  nif: string;
-  passport: string;
-  phone: string;
-  email: string;
-  birthDate: string;
-  filiation: string;
-  maritalStatus: string;
-  avatarUrl: string;
-  verificationLevel: 'Verificado' | 'Totalmente Verificado' | 'Pendente';
-  confidenceScore: number;
-  lastAccess: string;
-}
-
-export interface ActiveProfile {
-  mode: AppMode;
-  role: string;
-  institutionName?: string;
-  departmentName?: string;
-  permissions: string[];
+export enum AppMode {
+  USER = 'user',
+  INSTITUTION = 'institution',
+  ADMIN = 'admin'
 }
 
 export enum InstitutionCategory {
@@ -340,90 +28,370 @@ export enum InstitutionStatus {
   INATIVA = "Inativa"
 }
 
-export interface Institution {
-  id: string;
-  name: string;
-  fullName: string;
-  category: InstitutionCategory | string;
+export enum SensitivityLevel {
+  PUBLICO = "Público",
+  PRIVADO = "Privado",
+  SENSIVEL = "Sensível",
+  RESTRITO = "Restrito",
+  ULTRA_RESTRITO = "Ultra Restrito"
+}
+
+export enum PriorityScale {
+  NORMAL = "Normal",
+  IMPORTANTE = "Importante",
+  URGENTE = "Urgente",
+  CRITICO = "Crítico"
+}
+
+export enum CorrespondenceStatus {
+  NAO_LIDA = "Não Lida",
+  LIDA = "Lida",
+  ENVIADA = "Enviada",
+  RECEBIDA = "Recebida",
+  EM_ANALISE = "Em Análise",
+  RESPONDIDA = "Respondida",
+  ARQUIVADA = "Arquivada",
+  CANCELADA = "Cancelada"
+}
+
+export enum ProcessPriority {
+  ALTA = "Alta",
+  MEDIA = "Média",
+  BAIXA = "Baixa"
+}
+
+export enum ProcessStatus {
+  PENDENTE = "Pendente",
+  URGENTE = "Urgente",
+  PROCESSANDO = "Processando",
+  CONCLUIDO = "Concluido",
+  REJEITADO = "Rejeitado"
+}
+
+export enum AIPreApprovalStatus {
+  PRE_APPROVED = "pre-approved",
+  MANUAL_REVIEW = "manual-review"
+}
+
+export enum ContactStatus {
+  PENDENTE = "Pendente",
+  CONFIRMADO = "Confirmado"
+}
+
+export enum ContactType {
+  NORMAL = "Normal",
+  EMERGENCIA = "Emergência"
+}
+
+export enum InvoiceStatus {
+  PENDENTE = "Pendente",
+  PAGO = "Pago",
+  ATRASADO = "Atrasado"
+}
+
+export enum PaymentMethod {
+  MULTICAIXA_EXPRESS = "Multicaixa Express",
+  ATM_REFERENCE = "Atm / Referência",
+  TRANSFERENCIA = "Transferência",
+  CARTEIRA_DIGITAL = "Carteira Digital"
+}
+
+export enum NotificationType {
+  SUCCESS = "success",
+  WARNING = "warning",
+  INFO = "info"
+}
+
+// =========================================================================
+// CANONICAL DOMAIN ENTITY INTERFACES
+// =========================================================================
+
+/**
+ * 1. INSTITUTIONS
+ * Represents government or utility entities registered on the portal.
+ */
+export interface DbInstitution {
+  id: string;               // PK, e.g. "inst-agt"
+  name: string;             // Short name, e.g. "AGT"
+  fullName: string;         // Full name, e.g. "Administração Geral Tributária"
+  category: InstitutionCategory;
   province: string;
   municipio: string;
-  status: InstitutionStatus | string;
-  totalCorrespondence: number;
-  totalAgents: number;
-  lastActivity: string;
-  responseRate: string;
-  typeInst?: string;
-  cidade?: string;
-  comuna?: string;
+  status: InstitutionStatus;
+  instCode: string;         // Unique registration code, e.g. "AGT-001"
+  typeInst: string;         // e.g. "Administração Geral", "Empresa Pública"
+  cidade: string;
+  comuna: string;
   address?: string;
-  registrationDate: string;
-  aiUsageRate: string;
-  performanceScore: string;
   contactEmail: string;
   contactPhone: string;
   responsibleName: string;
   responsibleRole: string;
+  registrationDate: string;  // ISO format or simple date
   logoUrl?: string;
-  instCode?: string;
+  
+  // Computed statistical properties (derived or aggregated)
+  totalCorrespondence: number;
+  totalAgents: number;
+  lastActivity: string;
+  responseRate: string;
+  aiUsageRate: string;
+  performanceScore: string;
 }
 
-export type LanguageCode = 'pt' | 'um' | 'ki' | 'kk' | 'ch' | 'ng' | 'kw' | 'nh' | 'fi';
-
-export interface VideoSession {
-  id: string;
-  roomName: string;
-  subject: string;
-  associatedProtocol?: string;
-  associatedMessageId?: number;
-  status: 'agendada' | 'disponivel' | 'em_curso' | 'concluida' | 'cancelada';
-  hostBi: string;
-  hostName: string;
-  guestBi: string;
-  guestName: string;
-  scheduledFor: string;
-  createdAt: string;
-  closedAt?: string;
+/**
+ * 2. PROFILES / USERS
+ * Base authentication accounts for citizens, institutional workers, and system admins.
+ */
+export interface DbUser {
+  id: string;               // PK, UUID matching Supabase Auth id
+  email: string;            // Unique login email
+  role: AppMode;            // Role determining dashboard layout
+  status: 'Ativo' | 'Pendente' | 'Bloqueado';
+  lastLogin: string;
 }
 
-export interface VideoSessionParticipant {
-  id: string;
-  sessionId: string;
-  bi: string;
+/**
+ * 3. CITIZENS
+ * Civil identity records. Represents the official demographic and identification database.
+ * Relates 1:1 to users (the profile of a citizen) if they register on the platform.
+ */
+export interface DbCitizen {
+  bi: string;               // PK, unique Angolan ID Number, e.g. "009874562LA041"
+  nif: string;              // Unique Tax Number
+  passport: string;         // Passport Number
+  fullName: string;
+  birthDate: string;
+  filiation: string;
+  maritalStatus: string;
+  phone: string;
+  email: string;
+  municipio: string;
+  province: string;
+  verificationLevel: 'Verificado' | 'Totalmente Verificado' | 'Pendente';
+  confidenceScore: number;  // Biometric / credential score (e.g. 98)
+  userId?: string;          // FK -> DbUser.id (optional, populated when registered)
+  avatarUrl?: string;       // Public URL of profile picture
+}
+
+/**
+ * 4. WORKERS
+ * Institutional agents and workers registered to manage operations.
+ * Relates 1:1 to DbUser. Holds association with an Institution.
+ */
+export interface DbWorker {
+  id: string;               // PK, matching DbUser.id
   name: string;
-  role: 'host' | 'guest';
-  joinedAt: string;
-  leftAt?: string;
+  email: string;
+  institutionId: string;    // FK -> DbInstitution.id
+  role: string;             // Professional role, e.g. "Director Geral"
+  avatarUrl: string;
+  lastActive: string;
 }
 
-export interface VideoSessionEvent {
-  id: string;
-  sessionId: string;
-  eventType: 'criada' | 'agendada' | 'entrada' | 'saida' | 'iniciada' | 'encerrada' | 'cancelada';
-  bi: string;
-  userName: string;
+/**
+ * 5. DIGITAL PROTOCOLS
+ * Cryptographic sealing entity certifying valid correspondence or certificate issuing.
+ */
+export interface DbDigitalProtocol {
+  id: string;               // PK, UUID
+  protocolNumber: string;   // Unique format: "CDA-2026-PT-XXXXXX"
+  issuerInstitution: string; // Institution name
+  officialIssueDate: string;
+  officialTime: string;
+  issuerResponsible: string;
+  category: string;
+  documentType: string;
+  currentState: string;
+  priority: string;
+  deadlineDate: string;
+  qrCodeUrl: string;
+  digitalSignature: string;   // Base64 or crypt signature
+  digitalSeal?: string;       // HSM Seal Reference
+  documentHash?: string;      // Computed SHA-256 hash of message body/doc
+  institutionalCertificate?: string; // SN certificate serial number
+  signatureDate?: string;
+  legalValidity?: string;     // References legal decree
+}
+
+/**
+ * 6. CORRESPONDENCES
+ * Represents secure postal emails or official circulars exchanged on the network.
+ */
+export interface DbCorrespondence {
+  id: number;               // PK
+  senderBi: string;         // FK -> DbCitizen.bi or Institution system
+  recipientBi: string;       // FK -> DbCitizen.bi
+  org: string;              // Sender visual label, e.g. "AGT"
+  preview: string;
+  createdAt: string;        // Timestamp
+  unread: boolean;
+  subject: string;
+  body: string;
+  sensitivity: SensitivityLevel;
+  priorityScale: PriorityScale;
+  stateIndicator?: string;  // e.g. "Pagamento pendente"
+  actions: string[];        // Array of action buttons enabled for the user
+  attachments: string[];    // Array of attachment URLs/names
+  protocolId?: string;      // FK -> DbDigitalProtocol.id (optional cryptographic seal)
+  deadlineHoursRemaining?: number;
+}
+
+/**
+ * 7. CORRESPONDENCE STATE HISTORY
+ * Event audit log for individual correspondences demonstrating tracking status.
+ */
+export interface DbCorrespondenceStateEvent {
+  id: string;               // PK, UUID
+  correspondenceId: number; // FK -> DbCorrespondence.id
+  state: CorrespondenceStatus;
+  date: string;
+  time: string;
+  responsible: string;
   description: string;
-  timestamp: string;
 }
 
-export interface LanguageOption {
-  code: LanguageCode;
-  label: string;
-  flagCode: string;
+/**
+ * 8. DOCUMENTS (Digital Wallet Items)
+ * Holds official digitised original papers inside the Digital Purse.
+ */
+export interface DbDocument {
+  id: string;               // PK, UUID
+  holderBi: string;         // FK -> DbCitizen.bi (associated with citizen holder)
+  name: string;             // e.g. "BI Digital"
+  validity: string;         // Validity status text
+  code: string;             // Serialization code, e.g. "AO-BI-9281"
+  documentNumber: string;   // Document serial number
+  issuer: string;           // Issuer institution or department, e.g. "SME"
+  issuedAt: string;         // Issue Date
+  protocolId?: string;      // FK -> DbDigitalProtocol.id (cryptographic validation seal)
 }
 
-export const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'pt', label: 'Português', flagCode: 'AO' },
-  { code: 'um', label: 'Umbundu', flagCode: 'UM' },
-  { code: 'ki', label: 'Kimbundu', flagCode: 'KI' },
-  { code: 'kk', label: 'Kikongo', flagCode: 'KK' },
-  { code: 'ch', label: 'Chokwe', flagCode: 'CH' },
-  { code: 'ng', label: 'Ngangela', flagCode: 'NG' },
-  { code: 'kw', label: 'Kwanyama', flagCode: 'KW' },
-  { code: 'nh', label: 'Nhaneca', flagCode: 'NH' },
-  { code: 'fi', label: 'Fiote', flagCode: 'FI' }
-];
+/**
+ * 9. AUDIT LOGS
+ * Security event logger tracking system and administrator events.
+ */
+export interface DbAuditLog {
+  id: string;               // PK, BIGINT/Serial converted to string or UUID
+  action: string;
+  username: string;         // Actor identification (email, BI, or SYSTEM)
+  timestamp: string;        // ISO DateTime
+  actionType: NotificationType | 'danger' | 'info' | string;
+}
 
+/**
+ * 10. SYSTEM NOTIFICATIONS
+ * Alerts pushed to active user accounts.
+ */
+export interface DbNotification {
+  id: number;               // PK
+  targetBi: string;         // FK -> DbCitizen.bi
+  title: string;
+  message: string;
+  timeText: string;         // e.g. "2h atrás"
+  type: NotificationType;
+  targetTab: string;        // Route/Tab target redirects
+}
 
+/**
+ * 11. PROCESSES (User Service Requests)
+ * Processes requested by citizens like tax forms or certificate issuances.
+ */
+export interface DbProcess {
+  id: number;               // PK
+  userBi: string;           // FK -> DbCitizen.bi
+  userName: string;         // Redundant Denormalized name
+  serviceType: string;      // e.g. "NIF", "IPU", "Certidão"
+  priority: ProcessPriority;
+  timeText: string;         // Elapsed time indicator
+  status: ProcessStatus;
+  institution?: string;     // Target Institution short name
+  requestDate: string;      // ISO format date
+}
 
+/**
+ * 12. DOCUMENT ISSUANCE REQUESTS (Internal processes)
+ * Internal review flow for certifying digital identity papers.
+ */
+export interface DbDocRequest {
+  id: number;               // PK
+  userBi: string;           // FK -> DbCitizen.bi
+  userName: string;
+  docType: string;          // e.g. "BI Digital"
+  institution: string;      // Target Institution, e.g. "SME"
+  requestDate: string;
+  status: 'Pendente' | 'Aprovado' | 'Rejeitado';
+  aiStatus: AIPreApprovalStatus;
+}
 
+/**
+ * 13. TRUST CONTACTS (Circle of confidence)
+ * Auxiliary networks for alerts and vital health data synchronization.
+ */
+export interface DbTrustContact {
+  id: number;               // PK
+  ownerBi: string;          // FK -> DbCitizen.bi (associated owner)
+  name: string;
+  bi: string;               // Contact Person's BI
+  relation: string;         // e.g. "Mãe", "Irmão"
+  status: ContactStatus;
+  type: ContactType;
+  phone: string;
+}
 
+/**
+ * 14. UTILITY SERVICES BILLS / INVOICES
+ * Unpaid debts synchronised automatically.
+ */
+export interface DbInvoice {
+  id: string;               // PK, e.g. "FAT-ENDE-2026-991"
+  institutionId: string;    // FK -> DbInstitution.id
+  contractNumber: string;   // Associated client number
+  reference: string;        // Pay reference
+  amount: string;           // e.g. "11.200 Kz"
+  amountKz: number;         // Numeric currency representation
+  period: string;           // e.g. "Maio/2026"
+  dueDate: string;          // Limit date
+  status: InvoiceStatus;
+}
+
+/**
+ * 15. PAYMENTS (Receipts history)
+ * Transaction records of processed service fees.
+ */
+export interface DbPaymentRecord {
+  id: string;               // PK, e.g. "PAY-00129"
+  reference: string;        // Payment target reference code
+  amount: string;           // e.g. "45.000 Kz"
+  institutionName: string;   // target
+  paymentMethod: PaymentMethod;
+  dateTime: string;         // ISO timestamp
+  receiptNumber: string;    // Document serial code of transaction proof
+  status: 'Liquidado' | 'Estornado';
+}
+
+/**
+ * 16. AI ASSISTANT CONFIGURATIONS
+ * Represents digital assistant settings mapped to institutional roles.
+ */
+export interface DbAIAssistantConfig {
+  id: string;               // PK, UUID or specific code
+  name: string;
+  avatarUrl: string;
+  promptTheme: string;      // Context instructions
+  greetingMessage: string;
+  voicePitch: number;       // Speech factors
+  voiceSpeed: number;
+}
+
+/**
+ * 17. AI KNOWLEDGE BASE CHUNKS
+ * Relational context documentation to ground Gemini responses dynamically per institution.
+ */
+export interface DbAiKnowledgeBaseChunk {
+  id: string;               // PK, UUID
+  institutionId: string;    // FK -> DbInstitution.id
+  title: string;            // Document title, e.g. "Código Tributário Seccional"
+  content: string;          // Text block
+  updateDate: string;
+}
